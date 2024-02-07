@@ -322,7 +322,11 @@ class DataHandlerFlushByTagHook
             ->from($table)
             ->where($queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($id, \PDO::PARAM_INT)));
         
-        $row = $row->execute()->fetch();
+        if ((new Typo3Version())->getMajorVersion() >= 12) {
+            $row = $row->executeQuery()->fetchAssociative();
+        } else {
+            $row = $row->execute()->fetch();
+        }
         
         return array_merge($row, $fields);
     }
